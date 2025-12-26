@@ -39,34 +39,34 @@ def save_to_json(key, value):
 
 def retrieve_from_json(key):
     """
-    NOTE:
-        Not finished needs testing and tweaks.
+    retrieve_from_json
+        Retrieve file from json text.
+        Args:
+            key (str): The key of the site URL
     """
     if not os.path.exists(STORAGE_INFO["dir"]):
         os.makedirs(STORAGE_INFO["dir"])
         return False, "Files not found, no site retrievable."
 
+    try:
+        with open(FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return "File is empty or broken. Refreshing file and returning."
+
+    if key in data:
+        return True, data[key]
     else:
-        try:
-            with open(FILE_PATH, "w", encoding="utf-8") as file:
-                data = json.load(file)
-        except json.JSONDecodeError:
-            data = {}
-            return "File is empty or broken. Refreshing file and returning."
-
-        if data[key] is not None:
-            return True, data[key]
-
-        else:
-            return False, "Data not found inside of the file."
-
-    return True
+        return False, "Data not found inside of the file."
 
 
 def list_sites():
     """
-    TODO:
-        Method needs finished as mainly just a stub w/ file&dir checker.
+    list_sites
+        List out every single site stored inside of the file.
+
+    NOTE:
+        Will error out if the folder contains more than 2000 characters.
 
     """
     if not os.path.exists(STORAGE_INFO["dir"]):
@@ -74,4 +74,43 @@ def list_sites():
         print("Files not found sites not listable.")
         return False
 
-    return True
+    try:
+        with open(FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return False, "File is empty or broken. Nothing to list"
+
+    if not data:
+        return False, "No sites currently stored."
+
+    formattedSites = []
+    for key, value in data.items():
+        formattedSites.append(f"**{key}**: {value}")
+
+    return True, formattedSites
+
+
+def search_sites():
+    """
+    search_sites
+        Search sites from keywords using the key.
+        Args:
+            search (str): Keyword to search for a list of sites.
+    TODO:
+        Needs finished and tested
+
+    """
+    if not os.path.exists(STORAGE_INFO['dir']):
+        print("Files not found sites not searchable.")
+        return False, "Files not found 404: Not searchable"
+
+    try:
+        with open(FILE_PATH, "r", encoding="utf-8") as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return False, "Data not loadable, either empty or broken."
+
+    results = []
+    if data is not None:
+        return True, results
+        

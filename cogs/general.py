@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-from utils import save_to_json
+from jsonUtils import save_to_json, retrieve_from_json, list_sites
 
 
 class General(commands.Cog):
@@ -47,13 +47,27 @@ class General(commands.Cog):
 
     @app_commands.command(name="retrieve_site", description="Retrieve Site")
     async def retrieveSite(self, interaction: discord.Interaction, key: str):
-        site = []
-        await interaction.response.send_message(f"Site: {site}")
+        success, retrieved = retrieve_from_json(key)
+        if success:
+            site = retrieved
+            await interaction.response.send_message(f"Site: {site}")
+        else:
+            error_message = retrieved
+            await interaction.response.send_message(f"Error: {error_message}")
 
-    @app_commands.command(name="list_site(s)", description="List sites from storage")
+    @app_commands.command(name="list_sites", description="List sites from storage")
     async def listSites(self, interaction: discord.Interaction):
-        sites = []
-        await interaction.response.send_message(f"Site: {sites}")
+        success, result = list_sites()
+
+        if success:
+            response = "\n".join(result)
+            await interaction.response.send_message(f"Stored sites:\n{response}")
+        else:
+            await interaction.response.send_message(f"Error: {result}")
+
+    @app_commands.command(name="search_site", description="Search for a stored site.")
+    async def searchSites(self, interaction: discord.Interaction, key: str):
+        await interaction.response.send_message(f"Not implemented")
 
 
 async def setup(bot):

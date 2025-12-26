@@ -5,7 +5,7 @@ import traceback
 from discord.ext import commands
 from dotenv import load_dotenv
 
-from utils import STORAGE_INFO
+from jsonUtils import STORAGE_INFO
 
 load_dotenv()
 TOKEN = os.environ.get('DISCORD_TOKEN')
