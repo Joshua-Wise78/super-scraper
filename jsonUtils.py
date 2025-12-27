@@ -90,7 +90,7 @@ def list_sites():
     return True, formattedSites
 
 
-def search_sites():
+def search_sites(query):
     """
     search_sites
         Search sites from keywords using the key.
@@ -100,7 +100,7 @@ def search_sites():
         Needs finished and tested
 
     """
-    if not os.path.exists(STORAGE_INFO['dir']):
+    if not os.path.exists(STORAGE_INFO["dir"]):
         print("Files not found sites not searchable.")
         return False, "Files not found 404: Not searchable"
 
@@ -111,6 +111,13 @@ def search_sites():
         return False, "Data not loadable, either empty or broken."
 
     results = []
-    if data is not None:
-        return True, results
-        
+    query_lowered = query.lower()
+
+    for key, value in data.items():
+        if query_lowered in key.lower():
+            results.append(f"{key}: {value}")
+
+    if not results:
+        return False, f"No sites found with query: {query}."
+
+    return True, results

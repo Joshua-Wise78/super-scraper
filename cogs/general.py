@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
-from jsonUtils import save_to_json, retrieve_from_json, list_sites
+from jsonUtils import save_to_json, retrieve_from_json, list_sites, search_sites
+from fandom import get_fandom
 
 
 class General(commands.Cog):
@@ -66,8 +67,36 @@ class General(commands.Cog):
             await interaction.response.send_message(f"Error: {result}")
 
     @app_commands.command(name="search_site", description="Search for a stored site.")
-    async def searchSites(self, interaction: discord.Interaction, key: str):
-        await interaction.response.send_message(f"Not implemented")
+    async def searchSites(self, interaction: discord.Interaction, query: str):
+        success, result = search_sites(query)
+
+        if success:
+            response = "\n".join(result)
+            await interaction.response.send_message(f"Stored Sites:\n{response}")
+        else:
+            await interaction.response.send_message(f"Error: {result}")
+
+    @app_commands.command(
+        name="search_wiki", description="Search Fandom for specifc items."
+    )
+    async def searchWiki(self, interaction: discord.Interaction, key: str, query: str):
+        success, result = await get_fandom(key, query)
+
+        if success:
+            embed = discord.Embed(
+                title=result["title"],
+                description=result["summary"][:200] + "...",
+                url=result["url"],
+                color=0x00FF00,
+            )
+            if result["image"]:
+                embed.set_image(url=result["image"])
+
+            await interaction.response.send_message(embed=embed)
+
+        else:
+            print(f"Error Wiki command failed: {result}")
+            await interaction.response.send_message(f"Error: {result}")
 
 
 async def setup(bot):
