@@ -24,7 +24,7 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-initial_extensions = ["cogs.general"]
+initial_extensions = ["cogs.general", "cogs.server"]
 
 
 @bot.event

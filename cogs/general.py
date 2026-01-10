@@ -5,7 +5,6 @@ from discord import app_commands
 from jsonUtils import save_to_json, retrieve_from_json, list_sites, search_sites
 from fandom import get_fandom
 
-
 class General(commands.Cog):
     """
     TODO:
@@ -13,6 +12,7 @@ class General(commands.Cog):
             to the user for errors.
         2. Add capabilities for multiple directory or files within one function
             call for ease of use.
+            
     Greetings
         Testing method used to test the bot, simply greets user.
 
